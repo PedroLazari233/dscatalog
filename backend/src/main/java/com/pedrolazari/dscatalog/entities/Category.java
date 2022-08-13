@@ -2,6 +2,7 @@ package com.pedrolazari.dscatalog.entities;
 
 import lombok.*;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 @AllArgsConstructor
@@ -9,8 +10,13 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode
+@Entity
+//@Table(name = "tb-category")
 public class Category implements Serializable {
+    private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 }
