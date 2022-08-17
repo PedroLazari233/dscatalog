@@ -6,9 +6,7 @@ import lombok.Setter;
 
 import java.time.Instant;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class StandardError {
 
     private Instant timestamp;
