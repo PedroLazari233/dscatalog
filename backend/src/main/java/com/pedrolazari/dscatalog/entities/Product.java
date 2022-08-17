@@ -20,10 +20,10 @@ public class Product {
     private Double price;
     private String imgUrl;
 
-    @Setter(AccessLevel.NONE) @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant date;
 
-    @ManyToMany
+    @ManyToMany @Setter(AccessLevel.NONE)
     @JoinTable(name = "tb_product_category",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
