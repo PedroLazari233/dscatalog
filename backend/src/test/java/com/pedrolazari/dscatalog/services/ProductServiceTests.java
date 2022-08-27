@@ -1,15 +1,27 @@
 package com.pedrolazari.dscatalog.services;
 
+import com.pedrolazari.dscatalog.entities.Product;
 import com.pedrolazari.dscatalog.repositories.ProductRepository;
+import com.pedrolazari.dscatalog.services.exceptions.DataBaseException;
+import com.pedrolazari.dscatalog.services.exceptions.ResourceNotFoundException;
+import com.pedrolazari.dscatalog.tests.Factory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 public class ProductServiceTests {
@@ -21,17 +33,48 @@ public class ProductServiceTests {
     private ProductRepository productRepository;
 
     private long existingId;
-    private long nonExistingid;
+    private long nonExistingId;
+    private long dependentId;
+    private PageImpl<Product> page;
+    private Product product;
 
     @BeforeEach
     void setUp() throws Exception{
         existingId = 1L;
-        nonExistingid = 1000L;
+        nonExistingId = 2L;
+        dependentId = 3L;
+        product = Factory.createProduct();
+        page = new PageImpl<>(List.of(product));
 
-        Mockito.doNothing().when(productRepository).deleteById(existingId);
+        when(productRepository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
+        when(productRepository.save(ArgumentMatchers.any())).thenReturn(product);
+        when(productRepository.findById(existingId)).thenReturn(Optional.of(product));
+        when(productRepository.findById(nonExistingId)).thenReturn(Optional.empty());
 
-        Mockito.doThrow(EmptyResultDataAccessException.class).when(productRepository).deleteById(nonExistingid);
+        doNothing().when(productRepository).deleteById(existingId);
+        doThrow(EmptyResultDataAccessException.class).when(productRepository).deleteById(nonExistingId);
+        doThrow(DataIntegrityViolationException.class).when(productRepository).deleteById(dependentId);
 
+    }
+
+    @Test
+    public void deleteShouldThrowDatabaseExceptionWhenIdIsDependent(){
+
+        Assertions.assertThrows(DataBaseException.class, () -> {
+            productService.deleteProduct(dependentId);
+        });
+
+        verify(productRepository, times(1)).deleteById(dependentId);
+    }
+
+    @Test
+    public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist(){
+
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            productService.deleteProduct(nonExistingId);
+        });
+
+        verify(productRepository, times(1)).deleteById(nonExistingId);
     }
 
     @Test
@@ -41,6 +84,6 @@ public class ProductServiceTests {
             productService.deleteProduct(existingId);
         });
 
-        Mockito.verify(productRepository, Mockito.times(1)).deleteById(existingId);
+        verify(productRepository, times(1)).deleteById(existingId);
     }
 }
