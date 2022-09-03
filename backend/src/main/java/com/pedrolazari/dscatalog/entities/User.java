@@ -21,7 +21,7 @@ public class User implements Serializable {
     private String email;
     private String password;
 
-    @ManyToMany @Setter(AccessLevel.NONE)
+    @ManyToMany(fetch = FetchType.EAGER) @Setter(AccessLevel.NONE)
     @JoinTable(name = "tb_user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
