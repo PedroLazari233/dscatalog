@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor @NoArgsConstructor @Getter @Setter @EqualsAndHashCode @Entity
 @Table(name = "tb_category")
@@ -20,6 +22,9 @@ public class Category implements Serializable {
 
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant UpdateAt;
+
+    @ManyToMany(mappedBy = "categories")
+    private Set<Product> productSet = new HashSet<>();
 
     public Category(long l, String electronics) {
         this.id = l;
