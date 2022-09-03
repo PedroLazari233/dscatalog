@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,20 +23,20 @@ import java.util.Optional;
 public class ProductService {
 
     @Autowired
-    private ProductRepository ProductRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
     public Page<ProductDTO> findAllPaged(Pageable pageable){
-        Page<Product> products = ProductRepository.findAll(pageable);
+        Page<Product> products = productRepository.findAll(pageable);
         return products.map( product -> new ProductDTO(product));
     }
 
     @Transactional(readOnly = true)
     public ProductDTO findById(Long id) {
-        Optional<Product> productOptional = ProductRepository.findById(id);
+        Optional<Product> productOptional = productRepository.findById(id);
         Product product = productOptional.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
         return new ProductDTO(product, product.getCategories());
     }
@@ -46,16 +45,16 @@ public class ProductService {
     public ProductDTO insertProduct(ProductDTO productDTO) {
         Product product = new Product();
         copyDtoToEntity(productDTO, product);
-        product = ProductRepository.save(product);
+        product = productRepository.save(product);
         return new ProductDTO(product);
     }
 
     @Transactional
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
         try{
-            Product product = ProductRepository.getOne(id);
+            Product product = productRepository.getOne(id);
             copyDtoToEntity(productDTO, product);
-            product = ProductRepository.save(product);
+            product = productRepository.save(product);
             return new ProductDTO(product);
         }
         catch (EntityNotFoundException e){
@@ -65,7 +64,7 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         try{
-            ProductRepository.deleteById(id);
+            productRepository.deleteById(id);
         }
         catch (EmptyResultDataAccessException e)
         {
