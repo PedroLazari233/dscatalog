@@ -18,7 +18,7 @@ public class UserDTO implements Serializable {
     private String email;
 
     @Setter(AccessLevel.NONE)
-    Set<RoleDTO> roleDTOS = new HashSet<>();
+    Set<RoleDTO> roles = new HashSet<>();
 
     public UserDTO() {
     }
@@ -28,6 +28,6 @@ public class UserDTO implements Serializable {
         firstName = user.getFirstName();
         lastName = user.getLastName();
         email = user.getEmail();
-        user.getRoles().forEach(role -> this.roleDTOS.add(new RoleDTO(role)));
+        user.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
     }
 }

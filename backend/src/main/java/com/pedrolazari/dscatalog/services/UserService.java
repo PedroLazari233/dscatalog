@@ -2,13 +2,9 @@ package com.pedrolazari.dscatalog.services;
 
 import com.pedrolazari.dscatalog.dto.*;
 import com.pedrolazari.dscatalog.dto.UserDTO;
-import com.pedrolazari.dscatalog.entities.Category;
 import com.pedrolazari.dscatalog.entities.Role;
 import com.pedrolazari.dscatalog.entities.User;
-import com.pedrolazari.dscatalog.entities.User;
-import com.pedrolazari.dscatalog.repositories.CategoryRepository;
 import com.pedrolazari.dscatalog.repositories.RoleRepository;
-import com.pedrolazari.dscatalog.repositories.UserRepository;
 import com.pedrolazari.dscatalog.repositories.UserRepository;
 import com.pedrolazari.dscatalog.services.exceptions.DataBaseException;
 import com.pedrolazari.dscatalog.services.exceptions.ResourceNotFoundException;
@@ -92,7 +88,7 @@ public class UserService {
         user.setEmail(userDTO.getEmail());
 
         user.getRoles().clear();
-        for (RoleDTO roleDTO : userDTO.getRoleDTOS()) {
+        for (RoleDTO roleDTO : userDTO.getRoles()) {
             Role role = roleRepository.getOne(roleDTO.getId());
             user.getRoles().add(role);
         }
