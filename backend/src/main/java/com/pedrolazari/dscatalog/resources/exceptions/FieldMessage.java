@@ -7,11 +7,11 @@ import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
-public class FiledMessage implements Serializable {
+public class FieldMessage implements Serializable {
 
     private String fieldName;
     private String message;
 
-    public FiledMessage() {
+    public FieldMessage() {
     }
 }
