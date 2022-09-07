@@ -5,6 +5,9 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,8 +16,10 @@ import java.util.Set;
 public class UserDTO implements Serializable {
 
     private Long id;
+    @NotBlank(message = "Required field")
     private String firstName;
     private String lastName;
+    @Email(message = "Insert a valid email")
     private String email;
 
     @Setter(AccessLevel.NONE)

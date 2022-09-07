@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +21,15 @@ import java.util.Set;
 public class ProductDTO {
 
     private Long id;
+    @Size(min = 5, max = 20, message = "Name must have size between 5 and 20 characters")
+    @NotBlank(message = "Required field")
     private String name;
+    @NotBlank(message = "Required field")
     private String description;
+    @Positive(message = "Price must be positive")
     private Double price;
     private String imgUrl;
+    @PastOrPresent(message = "The date must be on the present or past")
     private Instant date;
 
     private List<CategoryDTO> categories = new ArrayList<>();
